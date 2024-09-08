@@ -3,7 +3,7 @@ import axios from "axios";
 import leftArrowSlideIcon from "../assets/left-arrow-slide-icon.svg";
 import rightArrowSlideIcon from "../assets/right-arrow-slide-icon.svg";
 
-const serverUrl = "https://e-commerce-back-19ay.onrender.com/ads/";
+const serverUrl = "https://e-commerce-back-19ay.onrender.com/public/ads/";
 
 const slideImages = [
     {
