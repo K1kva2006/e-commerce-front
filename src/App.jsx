@@ -11,7 +11,7 @@ import PageNoteFound from "./routes/PageNotFound";
 
 import languages from "./functions/languages";
 
-axios.defaults.baseURL = "http://localhost:3069";
+axios.defaults.baseURL = "https://e-commerce-back-19ay.onrender.com";
 
 export const Source = createContext(null);
 
