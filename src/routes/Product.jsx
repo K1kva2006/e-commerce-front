@@ -6,16 +6,18 @@ import { Source } from "../App";
 import Header from "../components/Header";
 
 const Product = () => {
-    const source = useContext(Source)
+    const source = useContext(Source);
 
-    const loc = useLocation()
+    const loc = useLocation();
     const { productId } = useParams();
 
     const [product, setProduct] = useState([]);
     const [productStatusErr, setProdcutStatusErr] = useState(false);
+    const [loading, setLoading] = useState(true); // დამატებული loading მდგომარეობა
     const navigateBack = useNavigate();
+
     useEffect(() => {
-        return async () => {
+        const fetchProduct = async () => {
             try {
                 const productRes = await axios.post("/get/product", {
                     productId,
@@ -24,8 +26,15 @@ const Product = () => {
             } catch (err) {
                 setProdcutStatusErr(err.response.data);
             }
+            setLoading(false); // მონაცემების ჩატვირთვის დასრულება
         };
-    }, []);
+
+        fetchProduct();
+    }, [productId]);
+
+    if (loading) {
+        return <div>იტვირთება...</div>; // "იტვირთება..." ტექსტი რენდერის დროს
+    }
 
     return (
         <>
@@ -44,8 +53,9 @@ const Product = () => {
                     </button>
                 </div>
             )}
+
             <section className="pt-36 max-w-7xl w-full m-auto ">
-                <div className="flex justify-between  tablet:flex-col tablet:items-center">
+                <div className="flex justify-between tablet:flex-col tablet:items-center">
                     <div className="flex flex-col gap-1 justify-center">
                         <div>
                             <h2 className="text-xl font-bold">
@@ -95,3 +105,4 @@ const Product = () => {
 };
 
 export default Product;
+
