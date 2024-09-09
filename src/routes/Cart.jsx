@@ -11,14 +11,7 @@ import trashIcon from "../assets/trash-icon.svg";
 const Cart = () => {
     const source = useContext(Source);
 
-    const [cartProducts, setCartProducts] = useState([
-        {
-            productName: "Loading Product Name",
-            productColor: "Loading Product Color",
-            productPrice: "Loading Product Price",
-            productImageUrl: "Loading Product Image",
-        },
-    ]);
+    const [cartProducts, setCartProducts] = useState([]);
 
     let totalCartProductsPrice = 0;
 
