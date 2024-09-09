@@ -22,14 +22,7 @@ function App() {
     const [language, setLanguage] = useState(languages[localStorage.getItem("language")]  || languages.EN)
     const [searchValue, setSearchValue] = useState("")
 
-    const [products, setProducts] = useState([
-        {
-            productName: "Loading Product Name",
-            productColor: "Loading Product Color",
-            productPrice: "Loading Product Price",
-            productImageUrl: "Loading Product Image",
-        },
-    ]);
+    const [products, setProducts] = useState([]);
 
     //popup satutus for global state
 
