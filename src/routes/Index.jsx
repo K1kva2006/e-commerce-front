@@ -14,9 +14,10 @@ import { Source } from "../App";
 const Index = () => {
     const source = useContext(Source);
     const [reRender, setReRender] = useState(false);
+    const [loading, setLoading] = useState(true); // დამატებულია loading მდგომარეობა
 
     useEffect(() => {
-        return async () => {
+        const checkAuth = async () => {
             try {
                 const res = await axios.get("/check/auth/token", {
                     headers: {
@@ -27,11 +28,19 @@ const Index = () => {
                 if (res) {
                     source.setClientData(res.data);
                 }
+                setLoading(false); // დასრულია დამუშავება
             } catch (err) {
                 console.log(err.message);
+                setLoading(false); // დასრულია დამუშავება, შეცდომის დროსაც
             }
         };
-    }, []);
+
+        checkAuth();
+    }, [source]);
+
+    if (loading) {
+        return <div>იტვირთება...</div>; // შეგიძლიათ შეცვალოთ ეს ტექსტი
+    }
 
     return (
         <>
