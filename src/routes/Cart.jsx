@@ -10,20 +10,17 @@ import trashIcon from "../assets/trash-icon.svg";
 
 const Cart = () => {
     const source = useContext(Source);
-
     const [cartProducts, setCartProducts] = useState([]);
-
-    let totalCartProductsPrice = 0;
-
+    const [loading, setLoading] = useState(true); // დამატებული loading მდგომარეობა
     const [resCartProductDelete, setResCartProductDelete] = useState("");
     const [reRender, setReRender] = useState(false);
 
-    const navigateBack = useNavigate()
-
+    let totalCartProductsPrice = 0;
+    const navigateBack = useNavigate();
     const navigateProductById = useNavigate();
 
     useEffect(() => {
-        return async () => {
+        const fetchCartProducts = async () => {
             try {
                 const res = await axios.get("/get/user/cart/products", {
                     headers: {
@@ -33,11 +30,18 @@ const Cart = () => {
                 setCartProducts(res.data);
                 setTimeout(() => setResCartProductDelete(""), 1000);
             } catch (err) {
-                navigateBack("/")
+                navigateBack("/");
                 console.log(err);
             }
+            setLoading(false); // მონაცემების ჩატვირთვის დასრულება
         };
-    }, [reRender]);
+
+        fetchCartProducts();
+    }, [reRender, navigateBack]);
+
+    if (loading) {
+        return <div>იტვირთება...</div>; // "იტვირთება..." ტექსტი რენდერის დროს
+    }
 
     return (
         <>
@@ -165,3 +169,4 @@ const Cart = () => {
 };
 
 export default Cart;
+
