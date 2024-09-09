@@ -17,6 +17,23 @@ export const Source = createContext(null);
 
 function App() {
     const [clientData, setClientData] = useState({});
+
+    useEffect(() => {
+        return async () => {
+            try {
+             const res = await axios.get("/check/auth/token", {
+                headers: {
+                    "x-auth-token": localStorage.getItem("authToken")
+                }
+            })  
+                setClientData(res.data)
+            } catch(err) {
+                console.log(err.response.data)
+            }
+            
+        }
+    }, [])
+    
     const [reRender, setReRender] = useState(false);
 
     const [language, setLanguage] = useState(languages[localStorage.getItem("language")]  || languages.EN)
