@@ -19,10 +19,12 @@ import addAdminIcon from "../assets/add-admin-icon.svg";
 
 const AdminPanel = () => {
     const source = useContext(Source);
-
     const navigateBack = useNavigate();
+    
+    const [loading, setLoading] = useState(true); // New loading state
+
     useEffect(() => {
-        return async () => {
+        const checkAuth = async () => {
             try {
                 const res = await axios.get("/check/auth/token", {
                     headers: {
@@ -32,41 +34,42 @@ const AdminPanel = () => {
 
                 if (!res.data.isAdmin) {
                     navigateBack("/");
+                } else {
+                    setLoading(false); // Set loading to false after successful check
                 }
             } catch (err) {
                 console.log(err.response);
+                navigateBack("/"); // Navigate to home if there's an error
             }
         };
-    }, []);
 
-    // funs
+        checkAuth(); // Call the async function
+    }, [navigateBack]);
 
+    // Functions to handle pop-up status changes
     const changeAddProductPopUpStatus = () => {
-        !source.addProductPopUpStatus
-            ? source.setAddProductPopUpStatus(true)
-            : source.setAddProductPopUpStatus(false);
-
+        source.setAddProductPopUpStatus(!source.addProductPopUpStatus);
         source.setDeleteProductPopUpStatus(false);
         source.setAddAdminPopUpStatus(false);
     };
 
     const changeDeleteProductPopUpStatus = () => {
-        !source.deleteProductPopUpStatus
-            ? source.setDeleteProductPopUpStatus(true)
-            : source.setDeleteProductPopUpStatus(false);
-
+        source.setDeleteProductPopUpStatus(!source.deleteProductPopUpStatus);
         source.setAddProductPopUpStatus(false);
         source.setAddAdminPopUpStatus(false);
     };
 
     const changeAddAdminPopUpStatus = () => {
-        !source.addAdminPopUpStatus
-            ? source.setAddAdminPopUpStatus(true)
-            : source.setAddAdminPopUpStatus(false);
-
+        source.setAddAdminPopUpStatus(!source.addAdminPopUpStatus);
         source.setDeleteProductPopUpStatus(false);
         source.setAddProductPopUpStatus(false);
     };
+
+    // Don't render the main content until loading is finished
+    if (loading) {
+        return <div>Loading...</div>; // You can customize this loading screen
+    }
+
     return (
         <>
             <Header />
@@ -93,9 +96,7 @@ const AdminPanel = () => {
                     </div>
                     <div>
                         {source.addProductPopUpStatus && <AddProductPopUp />}
-                        {source.deleteProductPopUpStatus && (
-                            <DeleteProductPopUp />
-                        )}
+                        {source.deleteProductPopUpStatus && <DeleteProductPopUp />}
                         {source.addAdminPopUpStatus && <AddAdminPopUp />}
                     </div>
                 </div>
@@ -105,3 +106,4 @@ const AdminPanel = () => {
 };
 
 export default AdminPanel;
+
