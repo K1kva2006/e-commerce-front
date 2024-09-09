@@ -9,21 +9,20 @@ import RegisterPopUp from "../popups/RegisterPopUp";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
 
-
-
 // images
-
 import searchIcon from "../assets/search-icon.svg";
 
 const Header = ({ setState, state }) => {
     const source = useContext(Source);
 
-
     const [isLogin, setIsLogin] = useState();
+    const [loading, setLoading] = useState(true); // დამატებული loading მდგომარეობა
+    const [cartProductCount, setCartProductCount] = useState(0);
     const routeLocation = useLocation();
     const navigateBack = useNavigate();
+
     useEffect(() => {
-        return async () => {
+        const checkAuth = async () => {
             try {
                 const res = await axios.get("/check/auth/token", {
                     headers: {
@@ -41,28 +40,33 @@ const Header = ({ setState, state }) => {
                 }
             }
         };
-    }, [state]);
 
-    const [cartProductCount, setCartProductCount] = useState(0);
-    useEffect(() => {
-        return async () => {
+        const fetchCartProducts = async () => {
             try {
-                const res = await axios.get(
-                    "/get/cart/products",
-
-                    {
-                        headers: {
-                            "x-auth-token": localStorage.getItem("authToken"),
-                        },
-                    }
-                );
-
+                const res = await axios.get("/get/cart/products", {
+                    headers: {
+                        "x-auth-token": localStorage.getItem("authToken"),
+                    },
+                });
                 setCartProductCount(res.data.productsCart);
             } catch (err) {
                 console.log(err);
             }
         };
-    }, [state]);
+
+        const loadData = async () => {
+            await checkAuth();
+            await fetchCartProducts();
+            setLoading(false); // დასრულია API მოთხოვნები
+        };
+
+        loadData();
+    }, [state, routeLocation, navigateBack]);
+
+    if (loading) {
+        return <div>იტვირთება...</div>; // რენდერი დაიჭერს "იტვირთება..." სანამ მოთხოვნები დასრულდება
+    }
+
     return (
         <>
             <header className="fixed w-full h-20 bg-slate-200 z-50">
@@ -71,11 +75,11 @@ const Header = ({ setState, state }) => {
                         <h1 className="mt-2 text-2xl">Kikva's Shop</h1>
 
                         <div id="forComputers" className="desktop-responsive">
-                            <DesktopNav isLogin={isLogin} cartProductCount={cartProductCount}/>
+                            <DesktopNav isLogin={isLogin} cartProductCount={cartProductCount} />
                         </div>
 
                         <div id="forMobiles" className="mobile-responsive">
-                            <MobileNav isLogin={isLogin} cartProductCount={cartProductCount}/>
+                            <MobileNav isLogin={isLogin} cartProductCount={cartProductCount} />
                         </div>
                     </div>
                     <div />
@@ -150,3 +154,4 @@ const Header = ({ setState, state }) => {
 };
 
 export default Header;
+
