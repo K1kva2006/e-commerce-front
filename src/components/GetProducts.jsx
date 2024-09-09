@@ -6,21 +6,29 @@ import { Source } from "../App";
 
 import cartIcon from "../assets/cart-icon.svg";
 
-const getProducts = ({ setState, state }) => {
+const GetProducts = ({ setState, state }) => {
     const source = useContext(Source);
-
     const navigateProductById = useNavigate();
+    const [loading, setLoading] = useState(true); // დამატებულია loading მდგომარეობა
 
     useEffect(() => {
-        return async () => {
+        const fetchProducts = async () => {
             try {
                 const res = await axios.get("/get/all/products");
                 source.setProducts(res.data);
+                setLoading(false); // დასრულების შემდეგ loading მდგომარეობა false ხდება
             } catch (err) {
                 console.log(err.response.data);
+                setLoading(false); // შეცდომის შემთხვევაშიც loading false ხდება
             }
         };
-    }, []);
+
+        fetchProducts(); // გამოძახება
+    }, [source]);
+
+    if (loading) {
+        return <div>იტვირთება...</div>; // ჩასვით თქვენთვის სასურველი ტექსტი
+    }
 
     return (
         <>
@@ -100,7 +108,6 @@ const getProducts = ({ setState, state }) => {
                                     }}
                                     className="p-3 text-base"
                                 >
-                                    {" "}
                                     {localStorage.getItem("authToken") &&
                                         source.language.addToCart}
                                     {!localStorage.getItem("authToken") &&
@@ -115,4 +122,4 @@ const getProducts = ({ setState, state }) => {
     );
 };
 
-export default getProducts;
+export default GetProducts;
