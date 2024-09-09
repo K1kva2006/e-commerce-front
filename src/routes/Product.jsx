@@ -11,11 +11,7 @@ const Product = () => {
     const loc = useLocation()
     const { productId } = useParams();
 
-    const [product, setProduct] = useState({
-        productName: "Name Loading",
-        productColor: "Color Loading",
-        productPrice: "Price Loading",
-    });
+    const [product, setProduct] = useState([]);
     const [productStatusErr, setProdcutStatusErr] = useState(false);
     const navigateBack = useNavigate();
     useEffect(() => {
