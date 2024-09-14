@@ -102,17 +102,4 @@ const ImageSlider = () => {
 };
 
 export default ImageSlider;
-
-/*
-
- <img
-                    src={currentImage.url}
-                    alt="bla"
-                    style={{
-                        maxWidth: "800px",
-                        width: "100%",
-                        height: "500px",
-                    }}
-                />
-
-*/
+
