@@ -18,6 +18,12 @@ const Index = () => {
 
     useEffect(() => {
         const checkAuth = async () => {
+            // თუ მონაცემები უკვე დატვირთულია, ნუ გამოიგზავნება მოთხოვნა
+            if (source.clientData) {
+                setLoading(false);
+                return;
+            }
+
             try {
                 const res = await axios.get("/check/auth/token", {
                     headers: {
@@ -25,21 +31,27 @@ const Index = () => {
                     },
                 });
 
-                if (res) {
+                if (res && res.data) {
                     source.setClientData(res.data);
                 }
-                setLoading(false); // დასრულია დამუშავება
+                setLoading(false); // დავასრულეთ რექუესტი
             } catch (err) {
                 console.log(err.message);
-                setLoading(false); // დასრულია დამუშავება, შეცდომის დროსაც
+                setLoading(false); // შეცდომის დროსაც დავასრულებთ
             }
         };
 
-        checkAuth();
-    }, [source]);
+        // რექუესტი მხოლოდ ერთხელ, თუ authToken არის და მონაცემები ჯერ არ არის დატვირთული
+        if (localStorage.getItem("authToken") && loading) {
+            checkAuth();
+        } else {
+            setLoading(false); // თუ token არ არის, მაშინ დავასრულოთ
+        }
+    }, [loading, source]);
 
+    // თუ დაველოდებით მონაცემებს, გამოსახოს "იტვირთება..."
     if (loading) {
-        return <div>იტვირთება...</div>; // შეგიძლიათ შეცვალოთ ეს ტექსტი
+        return <div>იტვირთება...</div>;
     }
 
     return (
@@ -71,4 +83,5 @@ const Index = () => {
         </>
     );
 };
+
 export default Index;
