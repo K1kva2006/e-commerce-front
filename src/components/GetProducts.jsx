@@ -24,7 +24,7 @@ const GetProducts = ({ setState, state }) => {
         };
 
         fetchProducts(); // გამოძახება
-    }, [source]);
+    }, []);
 
     if (loading) {
         return <div>იტვირთება...</div>; // ჩასვით თქვენთვის სასურველი ტექსტი
